@@ -13,10 +13,19 @@
         android:theme="@style/Theme.OPSCPOETaskApp"
         tools:targetApi="31">
         <activity
+            android:name=".Profile"
+            android:exported="false" />
+        <activity
+            android:name=".Register"
+            android:exported="false" />
+        <activity
+            android:name=".Login"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.OPSCPOETaskApp"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.OPSCPOETaskApp">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

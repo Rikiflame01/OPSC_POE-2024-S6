@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">OPSC-POE-Task-App</string>
+
+    <string-array name="category_options">
+        <item>Studying</item>
+        <item>C#</item>
+    </string-array>
 </resources>

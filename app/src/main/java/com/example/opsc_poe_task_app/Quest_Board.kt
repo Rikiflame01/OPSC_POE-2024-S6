@@ -5,23 +5,23 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-class Profile : AppCompatActivity() {
+class QuestBoard : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        setContentView(R.layout.activity_quest_board)
 
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
         val createQuestButton = findViewById<Button>(R.id.createQuestButton)
 
         questBoardButton.setOnClickListener {
-            val intent = Intent(this, QuestBoard::class.java)
-            startActivity(intent)
+            //Already on Quest Board screen, no action needed
         }
 
         profileButton.setOnClickListener {
-            //Already on Profile screen, no action needed
+            val intent = Intent(this, Profile::class.java)
+            startActivity(intent)
         }
 
         createQuestButton.setOnClickListener {

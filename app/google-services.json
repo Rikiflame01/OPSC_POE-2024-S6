@@ -12,7 +12,20 @@
           "package_name": "com.example.opsc_poe_task_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "110052884357-4otludq1rc6f7kltieqjlr3cj3p01dda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.opsc_poe_task_app",
+            "certificate_hash": "774aaf8350739bef7cbb5a8beeea04928c8932f2"
+          }
+        },
+        {
+          "client_id": "110052884357-g6k65l33nakdqf6lb1la7fjmqrds8aji.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBzYRpcARUGFv78c2csjoVjLFx79LbJK4M"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110052884357-g6k65l33nakdqf6lb1la7fjmqrds8aji.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -5,4 +5,7 @@
         <item>Studying</item>
         <item>C#</item>
     </string-array>
+
+    <string name="default_web_client_id">110052884357-g6k65l33nakdqf6lb1la7fjmqrds8aji.apps.googleusercontent.com</string>
+
 </resources>

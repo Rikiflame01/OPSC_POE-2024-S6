@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -13,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
 
 class Login : AppCompatActivity() {
 
@@ -24,18 +26,20 @@ class Login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id)) // Add this string to strings.xml
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
         auth = FirebaseAuth.getInstance()
 
+        //Google Sign-In Button
         val googleSignInButton = findViewById<Button>(R.id.googleSignInButton)
         googleSignInButton.setOnClickListener {
             signInWithGoogle()
         }
+
+
     }
 
     private fun signInWithGoogle() {
@@ -62,12 +66,11 @@ class Login : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Google Authentication Failed.", Toast.LENGTH_SHORT).show()
                 }
             }
     }

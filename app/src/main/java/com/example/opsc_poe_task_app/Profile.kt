@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class Profile : AppCompatActivity() {
 
@@ -28,5 +29,17 @@ class Profile : AppCompatActivity() {
             val intent = Intent(this, CreateQuest::class.java)
             startActivity(intent)
         }
+
+        lateinit var auth: FirebaseAuth
+        auth = FirebaseAuth.getInstance()
+
+        val signOutButtonBottom = findViewById<Button>(R.id.signOutButtonBottom)
+        signOutButtonBottom.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
     }
 }

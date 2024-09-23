@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.opsc_poe_task_app" />
+                  <option name="mobileSdkAppId" value="1:110052884357:android:1540db07d0abe7c6c64eec" />
+                  <option name="projectId" value="opsc7311-android-poe-5" />
+                  <option name="projectNumber" value="110052884357" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

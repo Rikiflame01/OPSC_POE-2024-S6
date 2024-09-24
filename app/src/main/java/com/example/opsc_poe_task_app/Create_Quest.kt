@@ -20,11 +20,22 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.NumberPicker
 import android.widget.RatingBar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class CreateQuest : AppCompatActivity() {
 
     private lateinit var minDailyGoalInput: EditText
     private lateinit var maxDailyGoalInput: EditText
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
+    private lateinit var categorySpinner: Spinner
+    private lateinit var categoryAdapter: ArrayAdapter<String>
 
     private val PICK_IMAGE_REQUEST = 1
     private var selectedImageUri: Uri? = null
@@ -40,6 +51,12 @@ class CreateQuest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_quest)
+
+        //Initialize Firebase Auth and Database
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        database = FirebaseDatabase.getInstance().getReference("categories/${currentUser?.uid}")
+
 
         //Tab buttons
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
@@ -60,7 +77,7 @@ class CreateQuest : AppCompatActivity() {
             //Already on Create Quest screen, no action needed
         }
 
-        // Date and time inputs (already implemented)
+        //Date and time inputs
         val dateInput = findViewById<EditText>(R.id.dateInput)
         dateInput.setOnClickListener { showDatePickerDialog(dateInput) }
 
@@ -81,24 +98,14 @@ class CreateQuest : AppCompatActivity() {
         //Find the category selector (Spinner)
         val categorySpinner = findViewById<Spinner>(R.id.categorySelector)
 
-        //ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.category_options,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Initialize the ArrayAdapter
+        categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ArrayList())
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categorySpinner.adapter = categoryAdapter
 
-            //Apply the adapter to the spinner
-            categorySpinner.adapter = adapter
-        }
+        //Load categories from Firebase
+        loadCategories()
 
-        val uploadPhotoButton = findViewById<Button>(R.id.uploadPhotoButton)
-
-        uploadPhotoButton.setOnClickListener {
-            //Launch the photo picker
-            openPhotoPicker()
-        }
 
         minDailyGoalInput = findViewById(R.id.minDailyGoalInput)
         maxDailyGoalInput = findViewById(R.id.maxDailyGoalInput)
@@ -117,6 +124,8 @@ class CreateQuest : AppCompatActivity() {
             Toast.makeText(this, "Selected Difficulty: $rating stars", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     //Function to show the DatePickerDialog
     private fun showDatePickerDialog(dateInput: EditText) {
@@ -177,25 +186,6 @@ class CreateQuest : AppCompatActivity() {
             .show()
     }
 
-    private fun openPhotoPicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        startActivityForResult(intent, PICK_IMAGE_REQUEST)
-    }
-
-    //Handle the result when the user selects a photo
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.data != null) {
-                selectedImageUri = data.data
-
-                Toast.makeText(this, "Photo selected!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     //Function to show the NumberPicker dialog
     private fun showNumberPickerDialog(goalInput: EditText) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_number_picker, null)
@@ -220,4 +210,43 @@ class CreateQuest : AppCompatActivity() {
             .create()
             .show()
     }
+
+    private fun loadCategories() {
+        val currentUser = auth.currentUser
+
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uid = currentUser.uid
+        val userReference = FirebaseDatabase.getInstance().getReference("users/$uid/categories")
+
+        userReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val categories = ArrayList<String>()
+
+                if (dataSnapshot.exists()) {
+                    for (snapshot in dataSnapshot.children) {
+                        val categoryName = snapshot.key
+                        categoryName?.let { categories.add(it) }
+                    }
+                }
+
+                if (categories.isEmpty()) {
+                    categories.add("No categories found")
+                }
+
+                categoryAdapter.clear()
+                categoryAdapter.addAll(categories)
+                categoryAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(this@CreateQuest, "Failed to load categories.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 }

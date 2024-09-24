@@ -145,12 +145,12 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, navigate to the Profile activity
+                    //Sign in success, navigate to the Profile activity
                     val intent = Intent(this, Profile::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    // Sign-in failed
+                    //Sign-in failed
                     Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -30,19 +30,27 @@ class Register : AppCompatActivity() {
             finish()
         }
 
-        //Registration
         submitButton.setOnClickListener {
             val username = usernameEditText.text.toString().lowercase()
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
             val confirmPassword = confirmPasswordEditText.text.toString()
 
-            if (username.isNotEmpty() && email.isNotEmpty() && password == confirmPassword) {
+            if (email.isNotEmpty() && password == confirmPassword) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            //Store user in Realtime Database
-                            val databaseReference = FirebaseDatabase.getInstance().getReference("users/$username")
+                            val currentUser = auth.currentUser
+                            val uid = currentUser?.uid ?: "" // Use UID if no username is provided
+
+                            val databaseReference = if (username.isNotEmpty()) {
+                                //Store using the provided username
+                                FirebaseDatabase.getInstance().getReference("users/$username")
+                            } else {
+                                //Store using the Firebase UID
+                                FirebaseDatabase.getInstance().getReference("users/$uid")
+                            }
+
                             val userMap = mapOf("email" to email)
                             databaseReference.setValue(userMap)
 

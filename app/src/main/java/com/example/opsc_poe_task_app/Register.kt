@@ -41,7 +41,7 @@ class Register : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val currentUser = auth.currentUser
-                            val uid = currentUser?.uid ?: "" // Use UID if no username is provided
+                            val uid = currentUser?.uid ?: "" //Use UID if no username is provided
 
                             val databaseReference = if (username.isNotEmpty()) {
                                 //Store using the provided username

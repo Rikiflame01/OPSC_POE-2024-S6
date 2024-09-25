@@ -41,11 +41,10 @@ class CreateQuest : AppCompatActivity() {
     private var selectedImageUri: Uri? = null
 
     private val colorMap = mapOf(
-        "Red" to Color.RED,
         "Green" to Color.GREEN,
         "Blue" to Color.BLUE,
         "Yellow" to Color.YELLOW,
-        "Black" to Color.BLACK
+        "Purple" to Color.MAGENTA
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

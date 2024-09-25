@@ -5,14 +5,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.util.*
 
 class CreateQuest : AppCompatActivity() {
@@ -26,7 +24,7 @@ class CreateQuest : AppCompatActivity() {
     private lateinit var maxDailyGoalInput: EditText
     private lateinit var descriptionInput: EditText
     private lateinit var daysOfWeek: List<CheckBox>
-    private var selectedColor: String = "None" // Default color
+    private var selectedColor: String = "None"
 
     private val colorMap = mapOf(
         "Green" to android.graphics.Color.GREEN,
@@ -39,14 +37,14 @@ class CreateQuest : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_quest)
 
-        // Initialize Firebase Auth and Database
+        //Initialize Firebase Auth and Database
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         if (currentUser != null) {
             database = FirebaseDatabase.getInstance().getReference("users/${currentUser.uid}/categories")
         }
 
-        // Tab buttons
+        //Tab buttons
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
         val createQuestButton = findViewById<Button>(R.id.createQuestButton)
@@ -62,10 +60,10 @@ class CreateQuest : AppCompatActivity() {
         }
 
         createQuestButton.setOnClickListener {
-            // Already on Create Quest screen, no action needed
+            //Already on Create Quest screen, no action needed
         }
 
-        // Date and time inputs
+        //Date and time inputs
         val dateInput = findViewById<EditText>(R.id.dateInput)
         dateInput.setOnClickListener { showDatePickerDialog(dateInput) }
 
@@ -75,14 +73,28 @@ class CreateQuest : AppCompatActivity() {
         val endTimeInput = findViewById<EditText>(R.id.endTimeInput)
         endTimeInput.setOnClickListener { showTimePickerDialog(endTimeInput) }
 
-        // Spinner setup
+        //Spinner setup
         categorySpinner = findViewById(R.id.categorySelector)
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ArrayList())
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = categoryAdapter
         loadCategories()
 
-        // Daily goal inputs
+        //Listener for category selection
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selected = parent.getItemAtPosition(position).toString()
+                if (selected == "Add New Category") {
+                    showAddCategoryDialog()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                //Do nothing
+            }
+        }
+
+        //Daily goal inputs
         minDailyGoalInput = findViewById(R.id.minDailyGoalInput)
         maxDailyGoalInput = findViewById(R.id.maxDailyGoalInput)
 
@@ -94,10 +106,10 @@ class CreateQuest : AppCompatActivity() {
             showNumberPickerDialog(maxDailyGoalInput)
         }
 
-        // Description input
+        //Description input
         descriptionInput = findViewById(R.id.descriptionInput)
 
-        // Days of the week checkboxes
+        //Days of the week checkboxes
         daysOfWeek = listOf(
             findViewById(R.id.mondayCheckBox),
             findViewById(R.id.tuesdayCheckBox),
@@ -108,10 +120,13 @@ class CreateQuest : AppCompatActivity() {
             findViewById(R.id.sundayCheckBox)
         )
 
-        // Difficulty selector
+        //Difficulty selector
         val difficultyRatingBar = findViewById<RatingBar>(R.id.difficultyRatingBar)
 
-        // Color selector button
+        //Quest name input
+        val questTitleInput = findViewById<EditText>(R.id.questTitleInput)
+
+        //Colour selector button
         val selectColorButton = findViewById<Button>(R.id.selectColorButton)
         val colorDisplay = findViewById<TextView>(R.id.colorDisplay)
 
@@ -121,7 +136,7 @@ class CreateQuest : AppCompatActivity() {
 
         val addQuestButton = findViewById<Button>(R.id.AddQuestButton)
         addQuestButton.setOnClickListener {
-            createQuest()
+            createQuest(questTitleInput.text.toString())
         }
     }
 
@@ -181,7 +196,11 @@ class CreateQuest : AppCompatActivity() {
 
                 if (dataSnapshot.exists()) {
                     for (snapshot in dataSnapshot.children) {
-                        val categoryName = snapshot.key
+                        var categoryName = snapshot.child("categoryName").getValue(String::class.java)
+                        if (categoryName == null) {
+                            //Fallback to the key if categoryName is missing
+                            categoryName = snapshot.key
+                        }
                         categoryName?.let { categories.add(it) }
                     }
                 }
@@ -189,6 +208,9 @@ class CreateQuest : AppCompatActivity() {
                 if (categories.isEmpty()) {
                     categories.add("No categories found")
                 }
+
+                //Add option to add a new category
+                categories.add("Add New Category")
 
                 categoryAdapter.clear()
                 categoryAdapter.addAll(categories)
@@ -201,14 +223,57 @@ class CreateQuest : AppCompatActivity() {
         })
     }
 
-    private fun createQuest() {
+    private fun showAddCategoryDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Add New Category")
+
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { dialog, _ ->
+            val newCategory = input.text.toString().trim()
+            if (newCategory.isNotEmpty()) {
+                //Add the new category
+                addNewCategory(newCategory)
+            } else {
+                Toast.makeText(this, "Category name cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        builder.show()
+    }
+
+    private fun addNewCategory(newCategory: String) {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val categoryReference = FirebaseDatabase.getInstance()
+                .getReference("users/${currentUser.uid}/categories/$newCategory")
+            categoryReference.child("categoryName").setValue(newCategory).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Category added successfully!", Toast.LENGTH_SHORT).show()
+                    loadCategories()
+                    //Set the spinner to the new category
+                    val position = categoryAdapter.getPosition(newCategory)
+                    categorySpinner.setSelection(position)
+                } else {
+                    Toast.makeText(this, "Failed to add category", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun createQuest(questName: String) {
         val currentUser = auth.currentUser
         if (currentUser == null) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val questName = findViewById<EditText>(R.id.categoryInput).text.toString().trim()
         val selectedCategory = categorySpinner.selectedItem.toString()
         val date = findViewById<EditText>(R.id.dateInput).text.toString()
         val startTime = findViewById<EditText>(R.id.startTimeInput).text.toString()
@@ -216,18 +281,18 @@ class CreateQuest : AppCompatActivity() {
         val difficulty = findViewById<RatingBar>(R.id.difficultyRatingBar).rating.toInt()
         val description = descriptionInput.text.toString().trim()
 
-        // Check which days of the week are selected
+        //Check which days of the week are selected
         val selectedDays = daysOfWeek.filter { it.isChecked }.map { it.text.toString() }
 
         val minGoal = minDailyGoalInput.text.toString().toIntOrNull()
         val maxGoal = maxDailyGoalInput.text.toString().toIntOrNull()
 
-        if (questName.isEmpty() || selectedCategory == "No categories found" || minGoal == null || maxGoal == null || selectedColor == "None") {
+        if (questName.isEmpty() || selectedCategory == "No categories found" || selectedCategory == "Add New Category" || minGoal == null || maxGoal == null || selectedColor == "None") {
             Toast.makeText(this, "Please fill all fields correctly", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Create a new quest map to store quest data
+        //Create a new quest map to store quest data
         val questData = mapOf(
             "name" to questName,
             "description" to description,
@@ -238,14 +303,20 @@ class CreateQuest : AppCompatActivity() {
             "minGoal" to minGoal,
             "maxGoal" to maxGoal,
             "daysOfWeek" to selectedDays,
-            "color" to selectedColor // Store selected color
+            "color" to selectedColor
         )
 
-        // Store the quest under the selected category
-        val databaseReference = FirebaseDatabase.getInstance().getReference("users/${currentUser.uid}/categories/$selectedCategory/quests")
-        val questId = databaseReference.push().key // Generate a unique key for the quest
+        val categoryReference = FirebaseDatabase.getInstance()
+            .getReference("users/${currentUser.uid}/categories/$selectedCategory")
+
+        //Set the categoryName if it doesn't exist
+        categoryReference.child("categoryName").setValue(selectedCategory)
+
+        //Store the quest under the selected category
+        val questsReference = categoryReference.child("quests")
+        val questId = questsReference.push().key
         if (questId != null) {
-            databaseReference.child(questId).setValue(questData).addOnCompleteListener { task ->
+            questsReference.child(questId).setValue(questData).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Quest added successfully!", Toast.LENGTH_SHORT).show()
                     clearFields()
@@ -257,7 +328,7 @@ class CreateQuest : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        findViewById<EditText>(R.id.categoryInput).text.clear()
+        findViewById<EditText>(R.id.questTitleInput).text.clear()
         findViewById<EditText>(R.id.dateInput).text.clear()
         findViewById<EditText>(R.id.startTimeInput).text.clear()
         findViewById<EditText>(R.id.endTimeInput).text.clear()
@@ -266,6 +337,8 @@ class CreateQuest : AppCompatActivity() {
         daysOfWeek.forEach { it.isChecked = false }
         findViewById<TextView>(R.id.colorDisplay).text = "Selected Color: None"
         selectedColor = "None"
+        minDailyGoalInput.text.clear()
+        maxDailyGoalInput.text.clear()
     }
 
     private fun showColorPickerDialog(colorDisplay: TextView) {
@@ -277,7 +350,6 @@ class CreateQuest : AppCompatActivity() {
                 val selectedColorName = colorNames[which]
                 selectedColor = selectedColorName
 
-                // Update the TextView to show the selected color
                 colorDisplay.text = "Selected Color: $selectedColorName"
             }
             .show()
@@ -287,7 +359,6 @@ class CreateQuest : AppCompatActivity() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_number_picker, null)
         val numberPicker = dialogView.findViewById<NumberPicker>(R.id.numberPicker)
 
-        // Set the range of hours (e.g., 0 to 24 hours)
         numberPicker.minValue = 0
         numberPicker.maxValue = 24
         numberPicker.wrapSelectorWheel = false

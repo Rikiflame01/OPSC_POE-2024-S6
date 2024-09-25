@@ -8,11 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class QuestBoard : AppCompatActivity() {
 
@@ -20,7 +16,7 @@ class QuestBoard : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var questRecyclerView: RecyclerView
     private lateinit var questAdapter: QuestAdapter
-    private val questList = ArrayList<Quest>()
+    private val questList = ArrayList<QuestWithCategory>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +25,6 @@ class QuestBoard : AppCompatActivity() {
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
         val createQuestButton = findViewById<Button>(R.id.createQuestButton)
-
 
         questBoardButton.setOnClickListener {
             //Already on Quest Board screen, no action needed
@@ -45,7 +40,6 @@ class QuestBoard : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         //Initialize Firebase Auth and Database
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
@@ -60,7 +54,6 @@ class QuestBoard : AppCompatActivity() {
         questRecyclerView.adapter = questAdapter
 
         loadQuests()
-
     }
 
     private fun loadQuests() {
@@ -69,29 +62,37 @@ class QuestBoard : AppCompatActivity() {
                 questList.clear()
 
                 for (categorySnapshot in snapshot.children) {
-                    val categoryName = categorySnapshot.key
+                    val categoryName = categorySnapshot.child("categoryName").getValue(String::class.java)?.trim()
                     val questsSnapshot = categorySnapshot.child("quests")
+
+                    if (categoryName == null) {
+                        Log.e("QuestBoard", "Category without categoryName field. Skipping.")
+                        continue
+                    }
 
                     for (questSnapshot in questsSnapshot.children) {
                         val quest = questSnapshot.getValue(Quest::class.java)
-                        Log.d("QuestBoard", "Quest Loaded: ${quest?.name}")  // Add this line
-                        quest?.let {
-                            questList.add(it)
+                        val questId = questSnapshot.key?.trim()
+                        Log.d("QuestBoard", "Loaded quest - categoryName: $categoryName, questId: $questId")
+
+                        if (quest != null && !questId.isNullOrEmpty()) {
+                            questList.add(QuestWithCategory(quest, categoryName, questId))
+                        } else {
+                            Log.e("QuestBoard", "Invalid quest data. Skipping.")
                         }
                     }
                 }
 
                 if (questList.isEmpty()) {
-                    Log.d("QuestBoard", "No quests found")  // Log if no quests are found
+                    Log.d("QuestBoard", "No quests found")
                 }
 
                 questAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("QuestBoard", "Failed to load quests: ${error.message}")  // Add this line
+                Log.e("QuestBoard", "Failed to load quests: ${error.message}")
             }
         })
     }
-
 }

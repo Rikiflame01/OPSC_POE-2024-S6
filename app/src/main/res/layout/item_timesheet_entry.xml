@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    tools:visibility="visible">
+
+    <!-- Image on the left -->
+    <ImageView
+        android:id="@+id/timesheetImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_photo_placeholder"
+        android:visibility="visible"
+        tools:visibility="gone" />
+
+    <!-- Text views in a vertical layout on the right -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/timesheetDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date: 25/09/2024"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/timesheetCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category: Work"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/timesheetHours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hours: 7"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

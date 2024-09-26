@@ -17,8 +17,6 @@ class Profile : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -26,6 +24,7 @@ class Profile : AppCompatActivity() {
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
         val createQuestButton = findViewById<Button>(R.id.createQuestButton)
+        val viewLogHoursButton = findViewById<Button>(R.id.viewLogHoursButton)
 
         questBoardButton.setOnClickListener {
             val intent = Intent(this, QuestBoard::class.java)
@@ -38,6 +37,12 @@ class Profile : AppCompatActivity() {
 
         createQuestButton.setOnClickListener {
             val intent = Intent(this, CreateQuest::class.java)
+            startActivity(intent)
+        }
+
+        viewLogHoursButton.setOnClickListener {
+            // Logic to navigate to TimeSheetActivity
+            val intent = Intent(this, TimeSheet::class.java)
             startActivity(intent)
         }
 

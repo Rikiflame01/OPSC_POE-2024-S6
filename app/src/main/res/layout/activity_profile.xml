@@ -207,12 +207,32 @@
                     app:pressedTranslationZ="0dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Title: See Timesheet Page -->
+            <TextView
+                android:id="@+id/timesheetTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="See Timesheet Page"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp" />
+
+            <!-- Button: View and log hours -->
+            <Button
+                android:id="@+id/viewLogHoursButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View and log hours"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp" />
+
             <Button
                 android:id="@+id/signOutButtonBottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign Out"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="80dp"
                 android:layout_gravity="center" />
         </LinearLayout>
     </ScrollView>

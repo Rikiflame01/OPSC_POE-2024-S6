@@ -22,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import java.text.SimpleDateFormat
 
 class TimeSheet : AppCompatActivity() {
 
@@ -35,7 +36,7 @@ class TimeSheet : AppCompatActivity() {
 
     private lateinit var timesheetRecyclerView: RecyclerView
     private lateinit var timesheetAdapter: TimeSheetAdapter
-    private val timesheetEntries = ArrayList<TimeSheetEntry>()
+    private val timesheetEntries = mutableListOf<TimeSheetEntry>()
 
     private lateinit var totalHoursValue: TextView
 
@@ -130,6 +131,9 @@ class TimeSheet : AppCompatActivity() {
                 timesheetEntries.clear()
                 categoryHoursMap.clear()
 
+                Log.d("TimeSheet", "Start Date Filter: $startDateFilter")
+                Log.d("TimeSheet", "End Date Filter: $endDateFilter")
+
                 for (categorySnapshot in snapshot.children) {
                     val categoryName =
                         categorySnapshot.child("categoryName").getValue(String::class.java)?.trim()
@@ -143,15 +147,19 @@ class TimeSheet : AppCompatActivity() {
                     for (entrySnapshot in timesheetEntriesSnapshot.children) {
                         val entry = entrySnapshot.getValue(TimeSheetEntry::class.java)
                         if (entry != null) {
-                            //Parse the entry date
+                            entry.entryId = entrySnapshot.key ?: ""
+                            entry.categoryName = categoryName
+
                             val entryDate = parseDate(entry.date)
                             if (entryDate != null) {
-                                //Apply date filters
+                                Log.d("TimeSheet", "Entry Date: ${entry.date} -> $entryDate")
+
                                 val isWithinStartDate = startDateFilter?.let { !entryDate.before(it) } ?: true
                                 val isWithinEndDate = endDateFilter?.let { !entryDate.after(it) } ?: true
 
+                                Log.d("TimeSheet", "isWithinStartDate: $isWithinStartDate, isWithinEndDate: $isWithinEndDate")
+
                                 if (isWithinStartDate && isWithinEndDate) {
-                                    entry.categoryName = categoryName
                                     timesheetEntries.add(entry)
                                     val entryHours = entry.getDurationInHours()
 
@@ -159,6 +167,8 @@ class TimeSheet : AppCompatActivity() {
                                     categoryHoursMap[categoryName] =
                                         categoryHoursMap.getOrDefault(categoryName, 0.0) + entryHours
                                 }
+                            } else {
+                                Log.e("TimeSheet", "Failed to parse entry date: ${entry.date}")
                             }
                         }
                     }
@@ -166,7 +176,7 @@ class TimeSheet : AppCompatActivity() {
 
                 timesheetAdapter.notifyDataSetChanged()
 
-                //Display total hours per category
+                //Update total hours per category
                 if (categoryHoursMap.isNotEmpty()) {
                     val categoryHoursText = categoryHoursMap.entries.joinToString(separator = "\n") { (category, hours) ->
                         "$category: ${String.format("%.2f", hours)} hrs"
@@ -185,12 +195,16 @@ class TimeSheet : AppCompatActivity() {
 
     private fun parseDate(dateStr: String): Date? {
         return try {
-            val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            sdf.parse(dateStr)
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+            val date = sdf.parse(dateStr)
+            Log.d("TimeSheet", "Parsed date: $dateStr -> $date")
+            date
         } catch (e: Exception) {
+            Log.e("TimeSheet", "Failed to parse date: $dateStr", e)
             null
         }
     }
+
 
     private fun showAddTimesheetDialog() {
         dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_timesheet_entry, null)
@@ -327,12 +341,12 @@ class TimeSheet : AppCompatActivity() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDateStr = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-            dateInput.setText(selectedDateStr)
-
-            //Parse the selected date
             val selectedDate = Calendar.getInstance()
             selectedDate.set(selectedYear, selectedMonth, selectedDay, 0, 0, 0)
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+            val selectedDateStr = sdf.format(selectedDate.time)
+            dateInput.setText(selectedDateStr)
+
             when (isStartDate) {
                 true -> {
                     startDateFilter = selectedDate.time
@@ -425,10 +439,12 @@ class TimeSheet : AppCompatActivity() {
         val timesheetEntriesReference = categoryReference.child("TimesheetEntries")
         val entryId = timesheetEntriesReference.push().key
         if (entryId != null) {
+            timesheetEntryData["entryId"] = entryId // Store the entryId
             timesheetEntriesReference.child(entryId).setValue(timesheetEntryData)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Timesheet entry saved", Toast.LENGTH_SHORT).show()
+                        // Reset the imageUri
                         imageUri = null
                     } else {
                         Toast.makeText(this, "Failed to save timesheet entry", Toast.LENGTH_SHORT)
@@ -437,6 +453,7 @@ class TimeSheet : AppCompatActivity() {
                 }
         }
     }
+
 
     //Function to open the image picker
     private fun openImagePicker() {

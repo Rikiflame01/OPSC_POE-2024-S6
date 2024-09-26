@@ -1,6 +1,7 @@
 package com.example.opsc_poe_task_app
 
 data class TimeSheetEntry(
+    var entryId: String = "",
     val date: String = "",
     val startTime: String = "",
     val endTime: String = "",

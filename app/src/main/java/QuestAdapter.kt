@@ -6,12 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 
 data class QuestWithCategory(
     val quest: Quest,
@@ -66,7 +65,6 @@ class QuestAdapter(
 
             val context = holder.itemView.context
 
-            //Show a dialog with the quest details and the delete button
             AlertDialog.Builder(context)
                 .setTitle(quest.name)
                 .setMessage(message)
@@ -74,7 +72,7 @@ class QuestAdapter(
                     dialog.dismiss()
                 }
                 .setNegativeButton("Delete") { dialog, _ ->
-                    //Confirm deletion
+
                     AlertDialog.Builder(context)
                         .setTitle("Confirm Deletion")
                         .setMessage("Are you sure you want to delete this quest?")
@@ -93,6 +91,8 @@ class QuestAdapter(
 
     override fun getItemCount(): Int = questList.size
 
+    //In progress.... not working 100%
+
     private fun deleteQuest(context: Context, categoryName: String, questId: String) {
         val currentUser = auth.currentUser
         if (currentUser != null) {
@@ -102,27 +102,94 @@ class QuestAdapter(
 
             if (trimmedCategoryName.isEmpty() || trimmedQuestId.isEmpty()) {
                 Log.e("QuestAdapter", "Invalid categoryName or questId. Aborting deletion.")
-                Toast.makeText(context, "Failed to delete quest: Invalid quest data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Failed to delete quest: Invalid quest data",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
-            val path = "users/${currentUser.uid}/categories/$trimmedCategoryName/quests/$trimmedQuestId"
+            val path =
+                "users/${currentUser.uid}/categories/$trimmedCategoryName/quests/$trimmedQuestId"
             Log.d("QuestAdapter", "Deleting quest at path: $path")
 
             val questReference = FirebaseDatabase.getInstance().getReference(path)
 
-            //Remove the specific quest from Firebase
-            questReference.removeValue().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("QuestAdapter", "Quest deleted: $questId")
-                    Toast.makeText(context, "Quest deleted", Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.e("QuestAdapter", "Failed to delete quest: ${task.exception?.message}")
-                    Toast.makeText(context, "Failed to delete quest", Toast.LENGTH_SHORT).show()
+            //Retrieve the quest data to get the photoPath
+            questReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        //Get the photoPath from the quest data
+                        val photoPath = dataSnapshot.child("photoPath").getValue(String::class.java)
+                        Log.d("QuestAdapter", "Retrieved photoPath: $photoPath")
+
+                        if (!photoPath.isNullOrEmpty()) {
+                            //Delete the image from Firebase Storage
+                            val storageReference = FirebaseStorage.getInstance().reference.child(photoPath)
+                            Log.d("QuestAdapter", "Deleting image from storage: $photoPath")
+
+                            storageReference.delete().addOnSuccessListener {
+                                Log.d("QuestAdapter", "Image deleted from storage")
+                                //Now delete the quest from the database
+                                deleteQuestFromDatabase(context, questReference, questId)
+                            }.addOnFailureListener { exception ->
+                                Log.e(
+                                    "QuestAdapter",
+                                    "Failed to delete image: ${exception.message}"
+                                )
+                                Toast.makeText(
+                                    context,
+                                    "Failed to delete quest image: ${exception.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                //Proceed to delete quest data even if image deletion fails
+                                deleteQuestFromDatabase(context, questReference, questId)
+                            }
+                        } else {
+                            Log.d("QuestAdapter", "No photoPath found. Proceeding to delete quest data.")
+                            //No photoPath, just delete the quest
+                            deleteQuestFromDatabase(context, questReference, questId)
+                        }
+                    } else {
+                        Log.e("QuestAdapter", "Quest data not found at path: $path")
+                        Toast.makeText(context, "Quest data not found", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.e("QuestAdapter", "Database error: ${databaseError.message}")
+                    Toast.makeText(
+                        context,
+                        "Failed to delete quest: ${databaseError.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
         } else {
             Log.e("QuestAdapter", "No current user. Cannot delete quest.")
+        }
+    }
+
+    private fun deleteQuestFromDatabase(
+        context: Context,
+        questReference: DatabaseReference,
+        questId: String
+    ) {
+        questReference.removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("QuestAdapter", "Quest deleted: $questId")
+                Toast.makeText(context, "Quest deleted", Toast.LENGTH_SHORT).show()
+
+                val position = questList.indexOfFirst { it.questId == questId }
+                if (position != -1) {
+                    questList.removeAt(position)
+                    notifyItemRemoved(position)
+                }
+            } else {
+                Log.e("QuestAdapter", "Failed to delete quest: ${task.exception?.message}")
+                Toast.makeText(context, "Failed to delete quest", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

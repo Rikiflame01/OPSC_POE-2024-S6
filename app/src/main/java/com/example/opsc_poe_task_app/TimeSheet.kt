@@ -11,14 +11,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -33,6 +36,7 @@ class TimeSheet : AppCompatActivity() {
     private lateinit var categoryAdapter: ArrayAdapter<String>
 
     private var imageUri: Uri? = null
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var timesheetRecyclerView: RecyclerView
     private lateinit var timesheetAdapter: TimeSheetAdapter
@@ -48,13 +52,11 @@ class TimeSheet : AppCompatActivity() {
 
     private lateinit var dialogView: View
 
-    companion object {
-        const val REQUEST_IMAGE_PICK = 1
-    }
+    //Date format instance
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //content view to timesheet activity layout
         setContentView(R.layout.activity_time_sheet)
 
         //Initialize Firebase Auth and Database
@@ -63,6 +65,10 @@ class TimeSheet : AppCompatActivity() {
         if (currentUser != null) {
             database =
                 FirebaseDatabase.getInstance().getReference("users/${currentUser.uid}/categories")
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
 
         //Initialize UI elements
@@ -108,6 +114,23 @@ class TimeSheet : AppCompatActivity() {
             showDatePickerDialog(endDateInput, false)
         }
 
+        //Initialize the image picker launcher
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK && result.data != null) {
+                    imageUri = result.data?.data
+
+                    if (imageUri != null) {
+                        Log.d("TimeSheet", "Image URI: $imageUri")
+                        Toast.makeText(this, "Image selected", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.e("TimeSheet", "Image URI is null")
+                    }
+                } else {
+                    Log.e("TimeSheet", "Image selection canceled or failed")
+                }
+            }
+
         //Load timesheet entries
         loadTimeSheetEntries()
 
@@ -128,62 +151,85 @@ class TimeSheet : AppCompatActivity() {
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                timesheetEntries.clear()
-                categoryHoursMap.clear()
+                //Move processing to a background thread
+                GlobalScope.launch(Dispatchers.Default) {
+                    timesheetEntries.clear()
+                    categoryHoursMap.clear()
 
-                Log.d("TimeSheet", "Start Date Filter: $startDateFilter")
-                Log.d("TimeSheet", "End Date Filter: $endDateFilter")
+                    Log.d("TimeSheet", "Start Date Filter: $startDateFilter")
+                    Log.d("TimeSheet", "End Date Filter: $endDateFilter")
 
-                for (categorySnapshot in snapshot.children) {
-                    val categoryName =
-                        categorySnapshot.child("categoryName").getValue(String::class.java)?.trim()
-                    val timesheetEntriesSnapshot = categorySnapshot.child("TimesheetEntries")
+                    for (categorySnapshot in snapshot.children) {
+                        val categoryName =
+                            categorySnapshot.child("categoryName").getValue(String::class.java)
+                                ?.trim()
+                        val timesheetEntriesSnapshot = categorySnapshot.child("TimesheetEntries")
 
-                    if (categoryName == null) {
-                        Log.e("TimeSheet", "Category without categoryName field. Skipping.")
-                        continue
-                    }
+                        if (categoryName == null) {
+                            Log.e(
+                                "TimeSheet",
+                                "Category without categoryName field. Skipping."
+                            )
+                            continue
+                        }
 
-                    for (entrySnapshot in timesheetEntriesSnapshot.children) {
-                        val entry = entrySnapshot.getValue(TimeSheetEntry::class.java)
-                        if (entry != null) {
-                            entry.entryId = entrySnapshot.key ?: ""
-                            entry.categoryName = categoryName
+                        for (entrySnapshot in timesheetEntriesSnapshot.children) {
+                            val entry = entrySnapshot.getValue(TimeSheetEntry::class.java)
+                            if (entry != null) {
+                                entry.entryId = entrySnapshot.key ?: ""
+                                entry.categoryName = categoryName
 
-                            val entryDate = parseDate(entry.date)
-                            if (entryDate != null) {
-                                Log.d("TimeSheet", "Entry Date: ${entry.date} -> $entryDate")
+                                val entryDate = parseDate(entry.date)
+                                if (entryDate != null) {
+                                    Log.d(
+                                        "TimeSheet",
+                                        "Entry Date: ${entry.date} -> $entryDate"
+                                    )
 
-                                val isWithinStartDate = startDateFilter?.let { !entryDate.before(it) } ?: true
-                                val isWithinEndDate = endDateFilter?.let { !entryDate.after(it) } ?: true
+                                    val isWithinStartDate =
+                                        startDateFilter?.let { !entryDate.before(it) } ?: true
+                                    val isWithinEndDate =
+                                        endDateFilter?.let { !entryDate.after(it) } ?: true
 
-                                Log.d("TimeSheet", "isWithinStartDate: $isWithinStartDate, isWithinEndDate: $isWithinEndDate")
+                                    Log.d(
+                                        "TimeSheet",
+                                        "isWithinStartDate: $isWithinStartDate, isWithinEndDate: $isWithinEndDate"
+                                    )
 
-                                if (isWithinStartDate && isWithinEndDate) {
-                                    timesheetEntries.add(entry)
-                                    val entryHours = entry.getDurationInHours()
+                                    if (isWithinStartDate && isWithinEndDate) {
+                                        timesheetEntries.add(entry)
+                                        val entryHours = entry.getDurationInHours()
 
-                                    //Add to category hours
-                                    categoryHoursMap[categoryName] =
-                                        categoryHoursMap.getOrDefault(categoryName, 0.0) + entryHours
+                                        //Add to category hours
+                                        categoryHoursMap[categoryName] =
+                                            categoryHoursMap.getOrDefault(categoryName, 0.0) + entryHours
+                                    }
+                                } else {
+                                    Log.e(
+                                        "TimeSheet",
+                                        "Failed to parse entry date: ${entry.date}"
+                                    )
                                 }
-                            } else {
-                                Log.e("TimeSheet", "Failed to parse entry date: ${entry.date}")
                             }
                         }
                     }
-                }
 
-                timesheetAdapter.notifyDataSetChanged()
+                    //Once processing is done, update the UI on the main thread
+                    withContext(Dispatchers.Main) {
+                        timesheetAdapter.notifyDataSetChanged()
 
-                //Update total hours per category
-                if (categoryHoursMap.isNotEmpty()) {
-                    val categoryHoursText = categoryHoursMap.entries.joinToString(separator = "\n") { (category, hours) ->
-                        "$category: ${String.format("%.2f", hours)} hrs"
+                        //Update total hours per category
+                        if (categoryHoursMap.isNotEmpty()) {
+                            val categoryHoursText = categoryHoursMap.entries.joinToString(
+                                separator = "\n"
+                            ) { (category, hours) ->
+                                "$category: ${String.format("%.2f", hours)} hrs"
+                            }
+                            totalHoursValue.text = categoryHoursText
+                        } else {
+                            totalHoursValue.text = "No Data"
+                        }
                     }
-                    totalHoursValue.text = categoryHoursText
-                } else {
-                    totalHoursValue.text = "No Data"
                 }
             }
 
@@ -195,8 +241,7 @@ class TimeSheet : AppCompatActivity() {
 
     private fun parseDate(dateStr: String): Date? {
         return try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-            val date = sdf.parse(dateStr)
+            val date = dateFormat.parse(dateStr)
             Log.d("TimeSheet", "Parsed date: $dateStr -> $date")
             date
         } catch (e: Exception) {
@@ -204,7 +249,6 @@ class TimeSheet : AppCompatActivity() {
             null
         }
     }
-
 
     private fun showAddTimesheetDialog() {
         dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_timesheet_entry, null)
@@ -215,7 +259,7 @@ class TimeSheet : AppCompatActivity() {
         val descriptionInput = dialogView.findViewById<EditText>(R.id.descriptionInput)
         val addPhotoButton = dialogView.findViewById<Button>(R.id.addPhotoButton)
 
-        //category spinner
+        //Category spinner
         categorySpinner = dialogView.findViewById(R.id.categorySpinner)
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ArrayList())
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -253,7 +297,7 @@ class TimeSheet : AppCompatActivity() {
 
         //Override the positive button to prevent auto-dismiss
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            //validation
+            //Validation
             val date = dateInput.text.toString()
             val startTime = startTimeInput.text.toString()
             val endTime = endTimeInput.text.toString()
@@ -263,7 +307,7 @@ class TimeSheet : AppCompatActivity() {
             if (date.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || description.isEmpty() || selectedCategory == "No categories found") {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
-                //Save the timesheet entry
+                // Save the timesheet entry
                 saveTimesheetEntry(date, startTime, endTime, description, selectedCategory)
                 dialog.dismiss()
             }
@@ -287,9 +331,10 @@ class TimeSheet : AppCompatActivity() {
 
                 if (dataSnapshot.exists()) {
                     for (snapshot in dataSnapshot.children) {
-                        var categoryName = snapshot.child("categoryName").getValue(String::class.java)
+                        var categoryName =
+                            snapshot.child("categoryName").getValue(String::class.java)
                         if (categoryName == null) {
-                            //Fallback
+                            // Fallback
                             categoryName = snapshot.key
                         }
                         categoryName?.let { categories.add(it) }
@@ -300,7 +345,7 @@ class TimeSheet : AppCompatActivity() {
                     categories.add("No categories found")
                 }
 
-                //Add option to add a new category(same as the spinner in the create quest activity)
+                //Add option to add a new category (same as the spinner in the create quest activity)
                 categories.add("Add New Category")
 
                 categoryAdapter.clear()
@@ -308,28 +353,32 @@ class TimeSheet : AppCompatActivity() {
                 categoryAdapter.notifyDataSetChanged()
 
                 //Set up listener for "Add New Category" option
-                categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        val selected = parent.getItemAtPosition(position).toString()
-                        if (selected == "Add New Category") {
-                            showAddCategoryDialog()
+                categorySpinner.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            val selected = parent.getItemAtPosition(position).toString()
+                            if (selected == "Add New Category") {
+                                showAddCategoryDialog()
+                            }
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+                            //Do nothing
                         }
                     }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {
-                        //Do nothing
-                    }
-                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(this@TimeSheet, "Failed to load categories.", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    this@TimeSheet,
+                    "Failed to load categories.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -340,31 +389,31 @@ class TimeSheet : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(selectedYear, selectedMonth, selectedDay, 0, 0, 0)
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-            val selectedDateStr = sdf.format(selectedDate.time)
-            dateInput.setText(selectedDateStr)
+        val datePickerDialog =
+            DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth, selectedDay, 0, 0, 0)
+                val selectedDateStr = dateFormat.format(selectedDate.time)
+                dateInput.setText(selectedDateStr)
 
-            when (isStartDate) {
-                true -> {
-                    startDateFilter = selectedDate.time
+                when (isStartDate) {
+                    true -> {
+                        startDateFilter = selectedDate.time
+                    }
+                    false -> {
+                        endDateFilter = selectedDate.time
+                    }
+                    null -> {
+                        // o nothing for date inputs in the dialog
+                    }
                 }
-                false -> {
-                    endDateFilter = selectedDate.time
-                }
-                null -> {
-                    //Do nothing for date inputs in the dialog
-                }
-            }
 
-            //Reload entries with the new filters
-            if (isStartDate != null) {
-                loadTimeSheetEntries()
-            }
+                //Reload entries with the new filters
+                if (isStartDate != null) {
+                    loadTimeSheetEntries()
+                }
 
-        }, year, month, day)
+            }, year, month, day)
 
         datePickerDialog.show()
     }
@@ -406,7 +455,14 @@ class TimeSheet : AppCompatActivity() {
 
             //Handle image upload if an image was selected
             if (imageUri != null) {
-                val storageReference = FirebaseStorage.getInstance().reference.child("timesheet_images/${UUID.randomUUID()}")
+                //Get the file extension
+                val fileExtension = getFileExtension(imageUri!!) ?: "jpg"
+                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                val storagePath = "timesheet_images/$fileName"
+                val storageReference = FirebaseStorage.getInstance().reference.child(storagePath)
+
+                Log.d("TimeSheet", "Uploading image to: ${storageReference.path}")
+
                 val uploadTask = storageReference.putFile(imageUri!!)
 
                 uploadTask.addOnSuccessListener {
@@ -414,14 +470,25 @@ class TimeSheet : AppCompatActivity() {
                     storageReference.downloadUrl.addOnSuccessListener { uri ->
                         val photoUrl = uri.toString()
                         timesheetEntryData["photoUrl"] = photoUrl
+                        timesheetEntryData["photoPath"] = storagePath
 
-                        //save the timesheet entry data to the database
+                        //Save the timesheet entry data to the database
                         saveEntryToDatabase(categoryReference, timesheetEntryData)
-                    }.addOnFailureListener {
-                        Toast.makeText(this, "Failed to get photo URL", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener { exception ->
+                        Log.e("TimeSheet", "Failed to get photo URL", exception)
+                        Toast.makeText(
+                            this,
+                            "Failed to get photo URL: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Failed to upload photo", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { exception ->
+                    Log.e("TimeSheet", "Failed to upload photo", exception)
+                    Toast.makeText(
+                        this,
+                        "Failed to upload photo: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
                 //No image selected, save the data directly
@@ -432,6 +499,12 @@ class TimeSheet : AppCompatActivity() {
         }
     }
 
+    private fun getFileExtension(uri: Uri): String? {
+        val contentResolver = contentResolver
+        val mimeTypeMap = android.webkit.MimeTypeMap.getSingleton()
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri))
+    }
+
     private fun saveEntryToDatabase(
         categoryReference: DatabaseReference,
         timesheetEntryData: HashMap<String, Any>
@@ -439,37 +512,31 @@ class TimeSheet : AppCompatActivity() {
         val timesheetEntriesReference = categoryReference.child("TimesheetEntries")
         val entryId = timesheetEntriesReference.push().key
         if (entryId != null) {
-            timesheetEntryData["entryId"] = entryId // Store the entryId
+            timesheetEntryData["entryId"] = entryId
             timesheetEntriesReference.child(entryId).setValue(timesheetEntryData)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        Log.d("TimeSheet", "Timesheet entry saved successfully")
                         Toast.makeText(this, "Timesheet entry saved", Toast.LENGTH_SHORT).show()
                         // Reset the imageUri
                         imageUri = null
                     } else {
-                        Toast.makeText(this, "Failed to save timesheet entry", Toast.LENGTH_SHORT)
-                            .show()
+                        Log.e("TimeSheet", "Failed to save timesheet entry", task.exception)
+                        Toast.makeText(
+                            this,
+                            "Failed to save timesheet entry: ${task.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         }
     }
 
-
-    //Function to open the image picker
+    //image picker
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, REQUEST_IMAGE_PICK)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
-            imageUri = data.data
-
-            Toast.makeText(this, "Image selected", Toast.LENGTH_SHORT).show()
-        }
+        imagePickerLauncher.launch(intent)
     }
 
     private fun showAddCategoryDialog() {
@@ -504,8 +571,11 @@ class TimeSheet : AppCompatActivity() {
             categoryReference.child("categoryName").setValue(newCategory)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Category added successfully!", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(
+                            this,
+                            "Category added successfully!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         loadCategoriesIntoSpinner()
                         val position = categoryAdapter.getPosition(newCategory)
                         categorySpinner.setSelection(position)

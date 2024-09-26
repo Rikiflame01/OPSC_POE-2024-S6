@@ -3,14 +3,13 @@ package com.example.opsc_poe_task_app
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class Profile : AppCompatActivity() {
 
@@ -24,7 +23,7 @@ class Profile : AppCompatActivity() {
         val questBoardButton = findViewById<Button>(R.id.questBoardButton)
         val profileButton = findViewById<Button>(R.id.profileButton)
         val createQuestButton = findViewById<Button>(R.id.createQuestButton)
-        val viewLogHoursButton = findViewById<Button>(R.id.viewLogHoursButton)
+        val timeSpentButton = findViewById<FloatingActionButton>(R.id.timeSpentButton)
 
         questBoardButton.setOnClickListener {
             val intent = Intent(this, QuestBoard::class.java)
@@ -32,7 +31,7 @@ class Profile : AppCompatActivity() {
         }
 
         profileButton.setOnClickListener {
-            //Already on Create Quest screen, no action needed
+            //Already on Profile screen, no action needed
         }
 
         createQuestButton.setOnClickListener {
@@ -40,8 +39,7 @@ class Profile : AppCompatActivity() {
             startActivity(intent)
         }
 
-        viewLogHoursButton.setOnClickListener {
-            // Logic to navigate to TimeSheetActivity
+        timeSpentButton.setOnClickListener {
             val intent = Intent(this, TimeSheet::class.java)
             startActivity(intent)
         }
@@ -50,7 +48,7 @@ class Profile : AppCompatActivity() {
 
         //Initialize GoogleSignInClient
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))  // Ensure you have this string in your resources
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 

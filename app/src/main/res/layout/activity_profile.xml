@@ -188,23 +188,6 @@
                         android:layout_height="wrap_content"
                         android:text="5:30pm" />
                 </LinearLayout>
-
-                <!-- Time Spent Button -->
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/timeSpentButton"
-                    android:layout_width="63dp"
-                    android:layout_height="56dp"
-                    android:layout_marginEnd="20dp"
-                    android:adjustViewBounds="false"
-                    android:clickable="true"
-                    android:contentDescription="Time Spent"
-                    android:src="@drawable/ic_timer"
-                    app:backgroundTint="#FFFFFF"
-                    app:elevation="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:maxImageSize="55dp"
-                    app:pressedTranslationZ="0dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Title: See Timesheet Page -->
@@ -218,22 +201,26 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp" />
 
-            <!-- Button: View and log hours -->
-            <Button
-                android:id="@+id/viewLogHoursButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View and log hours"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/timeSpentButton"
+                android:layout_width="63dp"
+                android:layout_height="56dp"
+                android:clickable="true"
+                android:contentDescription="Time Spent"
+                android:src="@drawable/ic_timer"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp" />
+                app:backgroundTint="#FFFFFF"
+                app:maxImageSize="55dp"
+                android:layout_marginTop="20dp"/>
 
+            <!-- Sign out button -->
             <Button
                 android:id="@+id/signOutButtonBottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign Out"
-                android:layout_marginTop="80dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="80dp"/>
         </LinearLayout>
     </ScrollView>
 

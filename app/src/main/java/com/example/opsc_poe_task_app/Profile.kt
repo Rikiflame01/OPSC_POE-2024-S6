@@ -51,46 +51,6 @@ class Profile : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        val createCategoryButton = findViewById<Button>(R.id.createCategoryButton)
-        val categoryInputField = findViewById<EditText>(R.id.categoryInputField)
-
-        //Category creation logic
-        createCategoryButton.setOnClickListener {
-            val categoryName = categoryInputField.text.toString().trim()
-
-            if (categoryName.length < 5) {
-                Toast.makeText(this, "Category name must be 5 letters or more", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val currentUser = auth.currentUser
-            if (currentUser != null) {
-                val uid = currentUser.uid
-                val databaseReference = FirebaseDatabase.getInstance().getReference("users/$uid/categories")
-
-                // Check if category already exists
-                databaseReference.child(categoryName).get().addOnSuccessListener {
-                    if (it.exists()) {
-                        Toast.makeText(this, "Category already exists", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Add the new category
-                        databaseReference.child(categoryName).setValue(true).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(this, "Category added successfully", Toast.LENGTH_SHORT).show()
-                                categoryInputField.text.clear()  // Clear the input field
-                            } else {
-                                Toast.makeText(this, "Failed to add category", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Database error: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         //Sign-Out Button Logic
         val signOutButton = findViewById<Button>(R.id.signOutButtonBottom)
         signOutButton.setOnClickListener {

@@ -18,7 +18,9 @@
         <LinearLayout
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
-            android:layout_height="35dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="42dp"
+            android:layout_marginTop="32dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,14 +29,14 @@
             <Button
                 android:id="@+id/questBoardButton"
                 android:layout_width="0dp"
-                android:layout_height="33dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/quest_board" />
 
             <Button
                 android:id="@+id/profileButton"
                 android:layout_width="0dp"
-                android:layout_height="33dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/profile_btn" />
 
@@ -47,21 +49,26 @@
         </LinearLayout>
 
         <!-- Category Creation Section -->
+
         <TextView
             android:id="@+id/questLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
-            android:text="Create Quest"
+            android:background="@drawable/textbox_box_extralong"
+            android:text=" Create Quest"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
         <EditText
             android:id="@+id/questTitleInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:hint="Enter quest name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,10 +78,12 @@
         <!-- Difficulty Selector using RatingBar -->
         <TextView
             android:id="@+id/difficultyLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="119dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
-            android:text="Select Difficulty"
+            android:background="@drawable/textbox_box_extralong"
+            android:text=" Select Difficulty"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +93,7 @@
             android:id="@+id/difficultyRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:numStars="3"
             android:rating="1"
@@ -95,10 +105,12 @@
         <!-- Timesheet Entry Section -->
         <TextView
             android:id="@+id/timesheetEntryLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="126dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
-            android:text="Timesheet Entry"
+            android:background="@drawable/textbox_box_extralong"
+            android:text=" Timesheet Entry"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,6 +120,7 @@
             android:id="@+id/dateInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="false"
@@ -120,6 +133,7 @@
             android:id="@+id/startTimeInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="false"
@@ -132,6 +146,7 @@
             android:id="@+id/endTimeInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="false"
@@ -143,10 +158,12 @@
         <!-- Does Repeat Section -->
         <TextView
             android:id="@+id/repeatLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="225dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
-            android:text="Repeats on the following days"
+            android:background="@drawable/textbox_box_extralong"
+            android:text=" Repeats on the following days"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -154,8 +171,9 @@
 
         <LinearLayout
             android:id="@+id/repeatDaysLayout"
-            android:layout_width="391dp"
-            android:layout_height="38dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -163,65 +181,27 @@
             app:layout_constraintTop_toBottomOf="@id/repeatLabel">
 
             <!-- Checkboxes for each day of the week -->
-            <CheckBox
-                android:id="@+id/mondayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mon" />
-
-            <CheckBox
-                android:id="@+id/tuesdayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tue" />
-
-            <CheckBox
-                android:id="@+id/wednesdayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Wed" />
-
-            <CheckBox
-                android:id="@+id/thursdayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thu" />
-
-            <CheckBox
-                android:id="@+id/fridayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fri" />
-
-            <CheckBox
-                android:id="@+id/saturdayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sat" />
-
-            <CheckBox
-                android:id="@+id/sundayCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sun" />
 
         </LinearLayout>
 
+        <!-- Category Selector -->
         <EditText
             android:id="@+id/descriptionInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginStart="42dp"
+            android:layout_marginTop="16dp"
             android:hint="Enter Description"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/repeatLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
-        <!-- Category Selector -->
         <Spinner
             android:id="@+id/categorySelector"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
             android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="parent"
@@ -233,6 +213,7 @@
             android:id="@+id/selectColorButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
             android:text="Select Color"
             app:layout_constraintEnd_toEndOf="parent"
@@ -244,6 +225,7 @@
             android:id="@+id/colorDisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:text="Selected Colour: None"
             app:layout_constraintEnd_toEndOf="parent"
@@ -255,6 +237,7 @@
             android:id="@+id/dailyGoalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
             android:text="Set Daily Goals (in hours)"
             android:textSize="16sp"
@@ -266,6 +249,7 @@
             android:id="@+id/minDailyGoalInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="false"
@@ -278,6 +262,7 @@
             android:id="@+id/maxDailyGoalInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
             android:clickable="true"
             android:focusable="false"
@@ -290,11 +275,76 @@
             android:id="@+id/AddQuestButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
             android:layout_marginTop="16dp"
             android:text="Create Quest"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/maxDailyGoalInput" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="338dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="42dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/repeatDaysLayout">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:id="@+id/mondayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mon" />
+
+                <CheckBox
+                    android:id="@+id/tuesdayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tue" />
+
+                <CheckBox
+                    android:id="@+id/wednesdayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wed" />
+
+                <CheckBox
+                    android:id="@+id/thursdayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thu" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:id="@+id/fridayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fri" />
+
+                <CheckBox
+                    android:id="@+id/saturdayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sat" />
+
+                <CheckBox
+                    android:id="@+id/sundayCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sun" />
+            </TableRow>
+
+        </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

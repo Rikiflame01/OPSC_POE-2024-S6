@@ -1,56 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#CCDCBE8F"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <EditText
         android:id="@+id/dateInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date"
-        android:focusable="false"
+        android:layout_height="48dp"
         android:clickable="true"
-        android:inputType="none"/>
+        android:focusable="false"
+        android:hint="Date"
+        android:inputType="none" />
 
     <EditText
         android:id="@+id/startTimeInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Start Time"
-        android:focusable="false"
+        android:layout_height="48dp"
         android:clickable="true"
-        android:inputType="none"/>
+        android:focusable="false"
+        android:hint="Start Time"
+        android:inputType="none" />
 
     <EditText
         android:id="@+id/endTimeInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="End Time"
-        android:focusable="false"
+        android:layout_height="48dp"
         android:clickable="true"
-        android:inputType="none"/>
+        android:focusable="false"
+        android:hint="End Time"
+        android:inputType="none" />
 
     <EditText
         android:id="@+id/descriptionInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="Description" />
 
     <Spinner
         android:id="@+id/categorySpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_marginTop="8dp" />
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:spinnerMode="dropdown" />
 
     <!-- Button for adding a photo -->
     <Button
         android:id="@+id/addPhotoButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Photo"
-        android:layout_gravity="center"/>
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:text="Add Photo" />
 
 </LinearLayout>

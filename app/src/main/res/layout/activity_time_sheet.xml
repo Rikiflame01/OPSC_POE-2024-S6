@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/book_background_left"
     android:padding="16dp"
     tools:context=".TimeSheet">
 
@@ -12,7 +13,9 @@
     <LinearLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,23 +24,23 @@
         <Button
             android:id="@+id/questBoardButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Quest Board" />
+            android:background="@drawable/quest_board" />
 
         <Button
             android:id="@+id/profileButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Profile" />
+            android:background="@drawable/profile_btn" />
 
         <Button
             android:id="@+id/createQuestButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Create Quest" />
+            android:background="@drawable/create_quest_btn" />
     </LinearLayout>
 
     <!-- Filter Section (Date Range Picker) -->
@@ -45,6 +48,7 @@
         android:id="@+id/filterSection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingTop="16dp"
@@ -91,6 +95,7 @@
         android:id="@+id/summarySection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingTop="16dp"
@@ -100,10 +105,11 @@
 
         <TextView
             android:id="@+id/totalHoursTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="221dp"
+            android:layout_height="28dp"
+            android:background="@drawable/textbox_box_extralong"
             android:paddingEnd="8dp"
-            android:text="Total Hours per Category:"
+            android:text=" Total Hours per Category:"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -124,6 +130,7 @@
         android:id="@+id/timesheetRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="42dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/addTimesheetEntryButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,10 +145,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
         android:contentDescription="Add Timesheet Entry"
         android:src="@drawable/ic_plus_sign"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timesheetRecyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

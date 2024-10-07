@@ -11,7 +11,9 @@
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,23 +22,23 @@
         <Button
             android:id="@+id/questBoardButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Quest Board" />
+            android:background="@drawable/quest_board" />
 
         <Button
             android:id="@+id/profileButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Profile" />
+            android:background="@drawable/profile_btn" />
 
         <Button
             android:id="@+id/createQuestButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Create Quest" />
+            android:background="@drawable/create_quest_btn" />
     </LinearLayout>
 
     <!-- RecyclerView for displaying quests -->
@@ -44,10 +46,11 @@
         android:id="@+id/questRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

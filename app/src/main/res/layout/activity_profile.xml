@@ -12,7 +12,9 @@
     <LinearLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,32 +25,35 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Quest Board" />
+            android:background="@drawable/quest_board" />
 
         <Button
             android:id="@+id/profileButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Profile" />
+            android:background="@drawable/profile_btn" />
 
         <Button
             android:id="@+id/createQuestButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Create Quest" />
+            android:background="@drawable/create_quest_btn" />
+
     </LinearLayout>
 
     <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="617dp"
+        android:layout_marginStart="42dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout">
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+        app:layout_constraintVertical_bias="0.5">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +65,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profileBlock"
                 android:layout_width="match_parent"
-                android:layout_height="148dp"
+                android:layout_height="131dp"
                 android:padding="16dp">
 
                 <!-- User Profile Picture -->
@@ -78,22 +83,26 @@
                     app:layout_constraintVertical_bias="0.0" />
 
                 <!-- User Name -->
+
+                <!-- Check Graphs Button -->
                 <TextView
                     android:id="@+id/userName"
-                    android:layout_width="202dp"
-                    android:layout_height="23dp"
+                    android:layout_width="167dp"
+                    android:layout_height="26dp"
                     android:text="User Name"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@id/profilePicture"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Check Graphs Button -->
                 <Button
                     android:id="@+id/checkGraphsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Check Graphs"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />

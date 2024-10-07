@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/timesheetItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/item_sheet_entry_background"
     android:orientation="horizontal"
     android:padding="8dp">
 
     <!-- Image on the left -->
     <ImageView
         android:id="@+id/timesheetImage"
-        android:layout_width="50dp"
+        android:layout_width="53dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_photo_placeholder"
-        android:visibility="gone" />
+        android:src="@drawable/timesheet_entry_profile_pic_placeholder"
+        android:visibility="visible" />
 
     <!-- Text views in a vertical layout -->
     <LinearLayout

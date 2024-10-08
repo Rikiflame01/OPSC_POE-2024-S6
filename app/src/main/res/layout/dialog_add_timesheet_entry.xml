@@ -12,6 +12,7 @@
         android:layout_height="48dp"
         android:clickable="true"
         android:focusable="false"
+        android:fontFamily="@font/ledger"
         android:hint="Date"
         android:inputType="none" />
 
@@ -21,6 +22,7 @@
         android:layout_height="48dp"
         android:clickable="true"
         android:focusable="false"
+        android:fontFamily="@font/ledger"
         android:hint="Start Time"
         android:inputType="none" />
 
@@ -30,6 +32,7 @@
         android:layout_height="48dp"
         android:clickable="true"
         android:focusable="false"
+        android:fontFamily="@font/ledger"
         android:hint="End Time"
         android:inputType="none" />
 
@@ -37,6 +40,7 @@
         android:id="@+id/descriptionInput"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:fontFamily="@font/ledger"
         android:hint="Description" />
 
     <Spinner
@@ -50,8 +54,10 @@
     <Button
         android:id="@+id/addPhotoButton"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@drawable/button_style"
+        android:fontFamily="@font/ledger"
         android:text="Add Photo" />
 
 </LinearLayout>

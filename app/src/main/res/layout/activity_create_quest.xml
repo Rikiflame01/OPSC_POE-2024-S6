@@ -11,7 +11,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/book_background_left"
+        android:background="@drawable/background_3"
         android:padding="16dp">
 
         <!-- Tab Buttons -->
@@ -19,8 +19,9 @@
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
             android:layout_height="32dp"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
+            android:layout_marginEnd="42dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,32 +32,37 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/quest_board" />
+                android:background="@drawable/quest_board"
+                android:fontFamily="@font/ledger" />
 
             <Button
                 android:id="@+id/profileButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/profile_btn" />
+                android:background="@drawable/profile_btn"
+                android:fontFamily="@font/ledger" />
 
             <Button
                 android:id="@+id/createQuestButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/create_quest_btn" />
+                android:background="@drawable/create_quest_btn"
+                android:fontFamily="@font/ledger" />
         </LinearLayout>
 
         <!-- Category Creation Section -->
 
         <TextView
             android:id="@+id/questLabel"
-            android:layout_width="100dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="42dp"
+            android:layout_width="113dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
             android:background="@drawable/textbox_box_extralong"
+            android:fontFamily="@font/ledger"
             android:text=" Create Quest"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +74,10 @@
             android:id="@+id/questTitleInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
+            android:fontFamily="@font/ledger"
             android:hint="Enter quest name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,11 +86,13 @@
         <!-- Difficulty Selector using RatingBar -->
         <TextView
             android:id="@+id/difficultyLabel"
-            android:layout_width="119dp"
-            android:layout_height="26dp"
-            android:layout_marginStart="42dp"
+            android:layout_width="138dp"
+            android:layout_height="27dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
             android:background="@drawable/textbox_box_extralong"
+            android:fontFamily="@font/ledger"
             android:text=" Select Difficulty"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,8 +103,9 @@
             android:id="@+id/difficultyRatingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:numStars="3"
             android:rating="1"
             android:stepSize="1"
@@ -105,11 +116,13 @@
         <!-- Timesheet Entry Section -->
         <TextView
             android:id="@+id/timesheetEntryLabel"
-            android:layout_width="126dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="42dp"
+            android:layout_width="144dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
             android:background="@drawable/textbox_box_extralong"
+            android:fontFamily="@font/ledger"
             android:text=" Timesheet Entry"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -120,10 +133,12 @@
             android:id="@+id/dateInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Enter Date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,10 +148,12 @@
             android:id="@+id/startTimeInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Enter Start Time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,10 +163,12 @@
             android:id="@+id/endTimeInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Enter End Time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -158,11 +177,13 @@
         <!-- Does Repeat Section -->
         <TextView
             android:id="@+id/repeatLabel"
-            android:layout_width="225dp"
-            android:layout_height="22dp"
-            android:layout_marginStart="42dp"
+            android:layout_width="250dp"
+            android:layout_height="27dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
             android:background="@drawable/textbox_box_extralong"
+            android:fontFamily="@font/ledger"
             android:text=" Repeats on the following days"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -175,6 +196,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="42dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -189,8 +211,10 @@
             android:id="@+id/descriptionInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
+            android:fontFamily="@font/ledger"
             android:hint="Enter Description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -201,8 +225,9 @@
             android:id="@+id/categorySelector"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
             android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -212,9 +237,12 @@
         <Button
             android:id="@+id/selectColorButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
+            android:background="@drawable/button_background"
+            android:fontFamily="@font/ledger"
             android:text="Select Color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -225,8 +253,10 @@
             android:id="@+id/colorDisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
+            android:fontFamily="@font/ledger"
             android:text="Selected Colour: None"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -237,8 +267,10 @@
             android:id="@+id/dailyGoalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
+            android:fontFamily="@font/ledger"
             android:text="Set Daily Goals (in hours)"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -249,10 +281,12 @@
             android:id="@+id/minDailyGoalInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Enter Minimum Daily Goal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -262,10 +296,12 @@
             android:id="@+id/maxDailyGoalInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Enter Maximum Daily Goal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -274,11 +310,15 @@
         <Button
             android:id="@+id/AddQuestButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="42dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="42dp"
+            android:background="@drawable/button_background"
+            android:fontFamily="@font/ledger"
             android:text="Create Quest"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/maxDailyGoalInput" />
 
@@ -286,8 +326,9 @@
             android:id="@+id/tableLayout"
             android:layout_width="338dp"
             android:layout_height="64dp"
-            android:layout_marginStart="42dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="42dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/repeatDaysLayout">
@@ -300,24 +341,28 @@
                     android:id="@+id/mondayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Mon" />
 
                 <CheckBox
                     android:id="@+id/tuesdayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Tue" />
 
                 <CheckBox
                     android:id="@+id/wednesdayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Wed" />
 
                 <CheckBox
                     android:id="@+id/thursdayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Thu" />
             </TableRow>
 
@@ -329,18 +374,21 @@
                     android:id="@+id/fridayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Fri" />
 
                 <CheckBox
                     android:id="@+id/saturdayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Sat" />
 
                 <CheckBox
                     android:id="@+id/sundayCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/ledger"
                     android:text="Sun" />
             </TableRow>
 

@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/book_background_left"
+    android:background="@drawable/background_2"
     android:padding="16dp">
 
     <!-- LinearLayout for buttons -->
@@ -14,6 +14,7 @@
         android:layout_height="32dp"
         android:layout_marginStart="42dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +49,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="42dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

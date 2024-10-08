@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/book_background_left"
+    android:background="@drawable/background_2"
     android:padding="16dp">
 
     <!-- App Icon -->
@@ -14,53 +14,29 @@
         android:layout_height="100dp"
         android:layout_marginStart="42dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         android:src="@drawable/ic_app_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Welcome Text -->
-    <TextView
-        android:id="@+id/welcomeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="42dp"
-        android:text="Welcome to QuestBoard!"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appIconImageView" />
 
     <!-- Username Field -->
-    <EditText
-        android:id="@+id/usernameEditText"
-        android:layout_width="335dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="42dp"
-        android:hint="Username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcomeTextView" />
 
     <!-- Password Field -->
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="42dp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameEditText" />
 
     <!-- Sign-In Button -->
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/ledger"
         android:text="Sign In"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,6 +48,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/ledger"
         android:text="Create Account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,21 +63,76 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/ledger"
         android:text="---- or ----"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/registerButton" />
 
     <!-- Sign-In with Google Button -->
+
     <Button
         android:id="@+id/googleSignInButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="42dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/ledger"
         android:text="Sign in with Google"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/separatorTextView" />
+
+    <TextView
+        android:id="@+id/welcomeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/ledger"
+        android:text="Welcome to QuestBoard!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appIconImageView" />
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/ledger"
+        android:hint="Username"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/ledger"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
 
     <Button
         android:id="@+id/signOutButton"
@@ -105,6 +140,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="42dp"
+        android:background="@drawable/button_style"
+        android:fontFamily="@font/ledger"
         android:text="Sign Out"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

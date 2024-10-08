@@ -60,6 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/ledger"
             android:text="From:"
             android:textSize="16sp" />
 
@@ -70,6 +71,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="Start Date"
             android:inputType="date" />
 
@@ -77,6 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/ledger"
             android:text="To:"
             android:textSize="16sp" />
 
@@ -87,9 +90,14 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="false"
+            android:fontFamily="@font/ledger"
             android:hint="End Date"
             android:inputType="date" />
     </LinearLayout>
+
+    <!-- Timesheet List -->
+
+    <!-- Floating Action Button (FAB) for adding a new timesheet entry -->
 
     <LinearLayout
         android:id="@+id/summarySection"
@@ -100,14 +108,16 @@
         android:orientation="vertical"
         android:paddingTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filterSection">
 
         <TextView
             android:id="@+id/totalHoursTitle"
-            android:layout_width="221dp"
-            android:layout_height="28dp"
+            android:layout_width="251dp"
+            android:layout_height="27dp"
             android:background="@drawable/textbox_box_extralong"
+            android:fontFamily="@font/ledger"
             android:paddingEnd="8dp"
             android:text=" Total Hours per Category:"
             android:textSize="18sp"
@@ -117,15 +127,13 @@
             android:id="@+id/totalHoursValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/ledger"
             android:paddingTop="8dp"
             android:text="No Data"
             android:textSize="16sp" />
 
     </LinearLayout>
 
-    <!-- Timesheet List -->
-
-    <!-- Floating Action Button (FAB) for adding a new timesheet entry -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/timesheetRecyclerView"
         android:layout_width="0dp"

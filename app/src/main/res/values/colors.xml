@@ -15,4 +15,13 @@
     <color name="colourPrimaryDark">#3700B3</color>
     <color name="colourAccent">#03DAC5</color>
     <color name="colourSecondary">#0000ff</color>
+
+    <color name="colourBelowGoal">#F88379</color> <!-- Red-ish -->
+    <color name="colourWithinGoal">#DAF7A6</color> <!-- Light Green -->
+    <color name="colourAboveGoal">#006c42</color> <!-- Dark Green -->
+    <color name="colourNoData">#EEEEEE</color> <!-- Light Grey -->
+
+    <!-- HOURS_WORKED_NO_GOAL, this will happen when a user logs hours, but has not created a quest yet -->
+    <color name="colourHoursWorkedNoGoal">#ADD8E6</color> <!-- Light Blue -->
+
 </resources>

@@ -1,51 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mpandroidchart="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Date Range Inputs -->
     <LinearLayout
-        android:id="@+id/dateRangeLayout"
+        android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/startDateInput"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <!-- Date Range Inputs -->
+        <LinearLayout
+            android:id="@+id/dateRangeLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Start Date"
-            android:focusable="false"
-            android:inputType="none"
-            />
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/startDateInput"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Start Date"
+                android:focusable="false"
+                android:inputType="none"
+                />
 
-        <EditText
-            android:id="@+id/endDateInput"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/endDateInput"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="End Date"
+                android:focusable="false"
+                android:inputType="none"
+                 />
+
+        </LinearLayout>
+
+        <!-- Min and Max Hours per Day -->
+        <LinearLayout
+            android:id="@+id/minMaxLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="End Date"
-            android:focusable="false"
-            android:inputType="none"
-            />
+            android:orientation="vertical"
+            android:padding="16dp">
+
+
+        </LinearLayout>
+
+        <!-- Line Chart -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_margin="16dp" />
 
     </LinearLayout>
-
-    <!-- Line Chart -->
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/lineChart"
-        android:layout_below="@id/dateRangeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp" />
-
-</RelativeLayout>
+</ScrollView>

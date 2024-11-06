@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-
+    implementation (libs.philjay.mpandroidchart)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -81,4 +81,6 @@ dependencies {
 
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
+
 }

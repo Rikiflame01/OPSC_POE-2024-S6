@@ -41,6 +41,7 @@
         </activity>
         <activity android:name=".QuestBoard" />
         <activity android:name=".CreateQuest" />
+        <activity android:name=".TimeSheetGraphActivity"></activity>
     </application>
 
 </manifest>

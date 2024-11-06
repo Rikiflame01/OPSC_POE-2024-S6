@@ -10,4 +10,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    //Graph colours
+    <color name="colourPrimary">#6200EE</color>
+    <color name="colourPrimaryDark">#3700B3</color>
+    <color name="colourAccent">#03DAC5</color>
 </resources>

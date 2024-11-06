@@ -127,11 +127,11 @@
 
                 <!-- Title: Daily Tasks -->
                 <TextView
-                    android:id="@+id/dailyTasksTitle"
+                    android:id="@+id/welcomeTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ledger"
-                    android:text="Daily Tasks:"
+                    android:text="Welcome to QuestBoard!"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -140,66 +140,23 @@
                 <!-- Tasks Column (To Do) -->
                 <LinearLayout
                     android:id="@+id/tasksColumn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="272dp"
+                    android:layout_height="145dp"
                     android:layout_marginTop="8dp"
                     android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dailyTasksTitle">
+                    app:layout_constraintTop_toBottomOf="@id/welcomeTitle">
 
                     <TextView
                         android:id="@+id/task1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="257dp"
+                        android:layout_height="match_parent"
                         android:fontFamily="@font/ledger"
-                        android:text="Cooking" />
+                        android:text="Create quests, keep track of your work progress by logging hours, and visualize your efforts!" />
 
-                    <TextView
-                        android:id="@+id/task2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ledger"
-                        android:text="Programming" />
-
-                    <TextView
-                        android:id="@+id/task3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ledger"
-                        android:text="Running" />
                 </LinearLayout>
 
                 <!-- Schedule Column -->
-                <LinearLayout
-                    android:id="@+id/scheduleColumn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dailyTasksTitle">
-
-                    <TextView
-                        android:id="@+id/time1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ledger"
-                        android:text="8am" />
-
-                    <TextView
-                        android:id="@+id/time2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ledger"
-                        android:text="1pm" />
-
-                    <TextView
-                        android:id="@+id/time3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/ledger"
-                        android:text="5:30pm" />
-                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Title: See Timesheet Page -->

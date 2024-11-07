@@ -1,3 +1,4 @@
+// TimeSheetAdapter.kt
 package com.example.opsc_poe_task_app
 
 import android.app.AlertDialog
@@ -10,8 +11,8 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class TimeSheetAdapter(
     private val context: Context,
@@ -51,13 +52,14 @@ class TimeSheetAdapter(
             holder.timesheetImage.visibility = View.VISIBLE
             Glide.with(context)
                 .load(entry.photoUrl)
+                .placeholder(R.drawable.timesheet_entry_profile_pic_placeholder)
                 .into(holder.timesheetImage)
         } else {
             holder.timesheetImage.visibility = View.GONE
         }
 
         holder.deleteEntryButton.setOnClickListener {
-            //Show confirmation dialog
+            // Show confirmation dialog
             AlertDialog.Builder(context)
                 .setTitle("Delete Entry")
                 .setMessage("Are you sure you want to delete this timesheet entry?")
@@ -83,13 +85,39 @@ class TimeSheetAdapter(
                 val entryReference = FirebaseDatabase.getInstance()
                     .getReference("users/$uid/categories/$categoryName/TimesheetEntries/$entryId")
 
-                //Delete the entry
-                entryReference.removeValue().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(context, "Entry deleted", Toast.LENGTH_SHORT).show()
-                        //data reload in the adapter via onDataChange
-                    } else {
-                        Toast.makeText(context, "Failed to delete entry", Toast.LENGTH_SHORT).show()
+                //Retrieve photoPath to delete the image from Firebase Storage
+                entryReference.child("photoPath").get().addOnSuccessListener { snapshot ->
+                    val photoPath = snapshot.getValue(String::class.java)
+                    if (!photoPath.isNullOrEmpty()) {
+                        //Delete the image from Firebase Storage
+                        FirebaseStorage.getInstance().reference.child(photoPath).delete()
+                            .addOnSuccessListener {
+                                Log.d("TimeSheet", "Image deleted successfully")
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("TimeSheet", "Failed to delete image", exception)
+                            }
+                    }
+
+                    //Delete the entry from Realtime Database
+                    entryReference.removeValue().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Entry deleted", Toast.LENGTH_SHORT).show()
+                            // Data reload in the adapter via onDataChange
+                        } else {
+                            Toast.makeText(context, "Failed to delete entry", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.addOnFailureListener { exception ->
+                    Log.e("TimeSheet", "Failed to retrieve photo path", exception)
+                    //Proceed to delete the entry even if image deletion fails
+                    entryReference.removeValue().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Entry deleted", Toast.LENGTH_SHORT).show()
+                            //Data reload in the adapter via onDataChange
+                        } else {
+                            Toast.makeText(context, "Failed to delete entry", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             } else {

@@ -285,6 +285,7 @@ class CreateQuest : AppCompatActivity() {
         }
     }
 
+
     private fun createQuest(questName: String) {
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -344,7 +345,7 @@ class CreateQuest : AppCompatActivity() {
             return
         }
 
-        // Create a new quest map to store quest data
+        //Create a new quest map to store quest data
         val questData = mapOf(
             "name" to questName,
             "description" to description,
@@ -372,6 +373,11 @@ class CreateQuest : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Quest added successfully!", Toast.LENGTH_SHORT).show()
                     clearFields()
+
+                    //Redirect to QuestBoard page
+                    val intent = Intent(this, QuestBoard::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this, "Failed to add quest", Toast.LENGTH_SHORT).show()
                 }
@@ -380,6 +386,7 @@ class CreateQuest : AppCompatActivity() {
             Toast.makeText(this, "Failed to generate quest ID", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun clearFields() {
         findViewById<EditText>(R.id.questTitleInput).text.clear()

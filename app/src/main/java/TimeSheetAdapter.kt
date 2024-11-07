@@ -1,4 +1,3 @@
-// TimeSheetAdapter.kt
 package com.example.opsc_poe_task_app
 
 import android.app.AlertDialog

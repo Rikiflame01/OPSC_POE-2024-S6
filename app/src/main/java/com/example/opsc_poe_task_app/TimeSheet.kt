@@ -1,6 +1,7 @@
 package com.example.opsc_poe_task_app
 
 import android.Manifest
+import androidx.lifecycle.lifecycleScope
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -38,6 +39,8 @@ import java.util.*
 
 class TimeSheet : AppCompatActivity() {
 
+    private lateinit var totalCategoriesValue: TextView
+
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
 
@@ -71,6 +74,8 @@ class TimeSheet : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_sheet)
+
+        totalCategoriesValue = findViewById(R.id.totalCategoriesValue)
 
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
@@ -190,7 +195,7 @@ class TimeSheet : AppCompatActivity() {
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                GlobalScope.launch(Dispatchers.Default) {
+                lifecycleScope.launch {
                     timesheetEntries.clear()
                     categoryHoursMap.clear()
 
@@ -217,7 +222,6 @@ class TimeSheet : AppCompatActivity() {
                                     if (isWithinStartDate && isWithinEndDate) {
                                         timesheetEntries.add(entry)
                                         val entryHours = entry.getDurationInHours()
-
                                         categoryHoursMap[categoryName] = categoryHoursMap.getOrDefault(categoryName, 0.0) + entryHours
                                     }
                                 } else {
@@ -229,6 +233,10 @@ class TimeSheet : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         timesheetAdapter.notifyDataSetChanged()
+
+                        //Update the total category count after counting
+                        totalCategoriesValue.text = categoryHoursMap.size.toString()
+                        Log.d("TimeSheet", "Total categories displayed in UI: ${categoryHoursMap.size}")
 
                         if (categoryHoursMap.isNotEmpty()) {
                             val categoryHoursText = categoryHoursMap.entries.joinToString(separator = "\n") { (category, hours) ->
@@ -247,6 +255,7 @@ class TimeSheet : AppCompatActivity() {
                 Toast.makeText(this@TimeSheet, "Failed to load timesheet entries: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+
     }
 
     private fun parseDate(dateStr: String): Date? {
@@ -423,56 +432,60 @@ class TimeSheet : AppCompatActivity() {
 
     private fun loadCategoriesIntoSpinner() {
         val currentUser = auth.currentUser
-
         if (currentUser == null) {
+            Log.e("TimeSheet", "User not logged in")
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
 
         val uid = currentUser.uid
         val userReference = FirebaseDatabase.getInstance().getReference("users/$uid/categories")
+        Log.d("TimeSheet", "Attempting to load categories from Firebase for user: $uid")
 
         userReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val categories = ArrayList<String>()
+                Log.d("TimeSheet", "onDataChange triggered in loadCategoriesIntoSpinner. Data snapshot exists: ${dataSnapshot.exists()}")
 
+                val categories = ArrayList<String>()
                 if (dataSnapshot.exists()) {
                     for (snapshot in dataSnapshot.children) {
-                        var categoryName = snapshot.child("categoryName").getValue(String::class.java)
-                        if (categoryName == null) {
-                            categoryName = snapshot.key
+                        val categoryName = snapshot.key
+                        Log.d("TimeSheet", "Found category: $categoryName")
+                        categoryName?.let {
+                            categories.add(it)
                         }
-                        categoryName?.let { categories.add(it) }
                     }
+                } else {
+                    Log.d("TimeSheet", "No categories found in the data snapshot")
                 }
 
-                if (categories.isEmpty()) {
+                // Update category count and UI
+                val categoryCount = categories.size
+                Log.d("TimeSheet", "Total categories counted: $categoryCount")
+
+                runOnUiThread {
+                    totalCategoriesValue.text = categoryCount.toString()
+                }
+
+                if (categoryCount == 0) {
                     categories.add("No categories found")
                 }
 
                 categories.add("Add New Category")
-
                 categoryAdapter.clear()
                 categoryAdapter.addAll(categories)
                 categoryAdapter.notifyDataSetChanged()
 
-                categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        val selected = parent.getItemAtPosition(position).toString()
-                        if (selected == "Add New Category") {
-                            showAddCategoryDialog()
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
+                Log.d("TimeSheet", "Category spinner populated with ${categories.size} items")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(this@TimeSheet, "Failed to load categories.", Toast.LENGTH_SHORT).show()
+                Log.e("TimeSheet", "Failed to load categories: ${databaseError.message}")
+                Toast.makeText(this@TimeSheet, "Failed to load categories: ${databaseError.message}", Toast.LENGTH_LONG).show()
             }
         })
     }
+
 
     private fun showAddCategoryDialog() {
         val builder = AlertDialog.Builder(this)

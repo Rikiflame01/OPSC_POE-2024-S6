@@ -288,6 +288,20 @@ class TimeSheet : AppCompatActivity() {
         categorySpinner.adapter = categoryAdapter
         loadCategoriesIntoSpinner()
 
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedCategory = parent.getItemAtPosition(position).toString()
+                if (selectedCategory == "Add New Category") {
+                    categorySpinner.setSelection(0)
+                    showAddCategoryDialog()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No action needed
+            }
+        }
+
         dateInput.setOnClickListener {
             showDatePickerDialog(dateInput, null)
         }
